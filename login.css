@@ -1,0 +1,68 @@
+
+body{
+    background-image: url('img/login.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    font-family: "Poppins", sans-serif;
+}
+
+
+.card-header{
+    background-image: url('img/login.jpg');
+    height: 35vh;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.card{
+    box-shadow: 0 2px 40px rgba(0, 0, 0, 0.5);
+
+}
+
+.input{
+    border-radius: 20px;
+}
+.input-with-icon {
+    position: relative;
+  }
+  
+  .icon {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    font-size: 1.2em;
+    color: #1d1d1d; /* Adjust icon color here */
+  }
+  
+  .form-control {
+    padding-left: 2.5rem; /* Adjust padding to accommodate icon */
+  }
+  .form-control:focus {
+    border-color: #316B90; 
+    box-shadow: 0 0 0 1px #316B90; 
+  }
+  .btn{
+    background-color: #4E85A3;
+    color: #ffff;
+    font-weight: 600;
+  }
+  .btn:hover{
+    background-color: #ffff;
+    color: #0c0c0c;
+    border: 2px solid #4E85A3;
+    box-shadow: 0 2px 7px rgba(0, 0, 0, 0.4);
+  }
+
+  .create{
+    color: #4E85A3;
+  }
+  .create:hover{
+    color: #1d1d1d;
+  }
+  @media screen and (max-width: 500px) {
+    body{
+      height: 100vh;
+    }
+  }

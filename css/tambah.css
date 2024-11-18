@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+* {
+    font-family: 'Poppins', sans-serif;
+}
+
+.card {
+    border: none;
+}
+
+.custom-search {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.presisi {
+    display: flex;
+    justify-content: end;
+}
+
+.kartu{
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.kartulogin {
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+}
+@media screen and (max-width: 473px) {
+    .presisi{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}

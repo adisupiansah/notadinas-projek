@@ -2,7 +2,7 @@
 session_start();
 require '../fungsi/functions.php';
 
-$nomor = query("SELECT * FROM ambilnomor");
+$nomor = query("SELECT * FROM ambilnomor ORDER BY id DESC");
 ?>
 
 <!DOCTYPE html>
@@ -115,8 +115,8 @@ $nomor = query("SELECT * FROM ambilnomor");
                         <th>No</th>
                         <th>Nama</th>
                         <th>Safung</th>
-                        <th>No pengajuan</th>
                         <th>Hal</th>
+                        <th>No pengajuan</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -126,8 +126,8 @@ $nomor = query("SELECT * FROM ambilnomor");
                         <td><?= $i; ?></td>
                         <td><?= $data['nama']; ?></td>
                         <td><?= $data['satfung']; ?></td>
-                        <td><?= $data['no_ndkeluar']; ?></td>
                         <td><?= $data['Hal']; ?></td>
+                        <td><?= $data['no_ndkeluar']; ?></td>
                     </tr>
                   
                     <?php $i++; ?>

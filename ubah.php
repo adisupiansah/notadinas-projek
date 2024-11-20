@@ -8,7 +8,7 @@ if (!isset($_SESSION["login"])) {
 }
 
 
-require 'functions.php';
+require './fungsi/functions.php';
 
 
 // ambil data di url
@@ -18,28 +18,6 @@ $id  = $_GET["id"];
 $mhs = query("SELECT * FROM mahasiswa WHERE id = $id")[0];
 
 
-
-
-// cek apakaah tombol submit sudah di tekan atau belum
-if (isset($_POST["submit"])) {
-
-    // cek apakah data berhasil di ubah atau tidak
-    if (ubah($_POST) > 0) {
-        echo "
-        <script>
-            alert('data berhasil di ubah');
-            document.location.href = 'index.php';
-        </script>
-        ";
-    } else {
-        echo "
-        <script>
-            alert('data gagal di ubah');
-            document.location.href = 'index.php';
-        </script>
-        ";
-    }
-}
 
 
 ?>
@@ -58,6 +36,7 @@ if (isset($_POST["submit"])) {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- css Custom -->
     <link rel="stylesheet" href="css/ubah.css">
 
@@ -151,6 +130,46 @@ if (isset($_POST["submit"])) {
         </div>
 
     </section>
+
+    <!-- code php menangani sweetalert -->
+    <?php
+    // cek apakaah tombol submit sudah di tekan atau belum
+    if (isset($_POST["submit"])) {
+
+        // cek apakah data berhasil di ubah atau tidak
+        if (ubah($_POST) > 0) {
+            echo "
+                <script>
+                    Swal.fire({
+                        title: 'Berhasil!',
+                        text: 'Data berhasil di edit.',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = 'index.php'; // Pengalihan ke index.php
+                        }
+                    });
+                </script>
+        ";
+        } else {
+            echo "
+                <script>
+                    Swal.fire({
+                        title: 'Gagal!',
+                        text: 'Data gagal dihapus.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = 'index.php'; // Pengalihan ke index.php
+                        }
+                    });
+                </script>
+        ";
+        }
+    }
+    ?>
 
     <!-- java script bootstrap v5 -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>

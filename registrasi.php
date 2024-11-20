@@ -1,6 +1,48 @@
 <?php
+    $koneksiLogin = mysqli_connect("localhost", "root", "", "if0_35735599_web_notadinas");
+function registrasi ($data) {
+    global $koneksiLogin;
+    $username = strtolower(stripslashes($data["username"]));
+    $password = mysqli_real_escape_string($koneksiLogin, $data["password"]);
+    $password2 = mysqli_real_escape_string($koneksiLogin, $data["password2"]);
 
-    require 'functions.php';
+    // cek username sudah ada atau belum
+    $result = mysqli_query($koneksiLogin, "SELECT username FROM user WHERE username = '$username'");
+
+    if ( mysqli_fetch_assoc($result) ) {
+        echo "
+            <script>
+                alert('username sudah terdaftar');
+            </script>";
+
+        return false;
+    }
+
+    // cek konsfirmasi password
+    if( $password !== $password2 ) {
+        echo "
+            <script>
+                alert('password tidak sesuai');
+            </script>
+        ";
+
+        return false;
+    } 
+
+    // enkripsi password
+    $password = password_hash($password, PASSWORD_DEFAULT);
+    
+
+    // tambahkan user baru ke database
+    // tambahkan user baru ke database
+    $query = "INSERT INTO user (username, password) VALUES ( '$username', '$password')";
+    mysqli_query($koneksiLogin, $query);
+
+
+    return mysqli_affected_rows($koneksiLogin);
+
+
+}
 
     if ( isset ($_POST["register"]) ) {
 
@@ -11,7 +53,7 @@
                 </script>
             ";
         } else {
-            echo mysqli_error($conn);
+            echo mysqli_error($koneksiLogin);
         }
     }
 

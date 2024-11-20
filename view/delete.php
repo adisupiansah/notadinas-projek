@@ -1,9 +1,9 @@
 <?php 
-require 'function.php';
+require '../fungsi/functions.php';
     // deleteruh data
 function deleteData() {
-    global $koneksi;
-    $query = mysqli_query($koneksi, "DELETE FROM ambilnomor");
+    global $conn;
+    $query = mysqli_query($conn, "DELETE FROM ambilnomor");
     return $query;
 }
 

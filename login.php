@@ -1,7 +1,7 @@
 <?php
 // jalankan session
 session_start();
-require 'functions.php';
+$koneksiLogin = mysqli_connect("localhost", "root", "", "if0_35735599_web_notadinas");
 
 // cek cookie
 // if (isset($_COOKIE['login'])) {
@@ -14,7 +14,7 @@ if (isset($_COOKIE['id']) && isset($_COOKIE['key'])) {
   $key = $_COOKIE['key'];
 
   // ambil username berdasarkan id
-  $result = mysqli_query($conn, "SELECT username FROM user WHERE id = $id");
+  $result = mysqli_query($koneksiLogin, "SELECT username FROM user WHERE id = $id");
   $row = mysqli_fetch_assoc($result);
 
   // cek cookie dan username
@@ -33,7 +33,7 @@ if (isset($_POST["login"])) {
   $username = $_POST["username"];
   $password = $_POST["password"];
 
-  $result = mysqli_query($conn, "SELECT * FROM user WHERE
+  $result = mysqli_query($koneksiLogin, "SELECT * FROM user WHERE
                  username = '$username'");
 
 

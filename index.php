@@ -5,9 +5,13 @@ if (!isset($_SESSION["login"])) {
     header("Location: login.php");
     exit;
 }
-
-require 'functions.php';
+require './fungsi/functions.php';
 $mahasiswa = query("SELECT * FROM mahasiswa ORDER BY id DESC");
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["backup"])) {
+    backupData(); // Panggil fungsi backup hanya jika ada request POST untuk backup
+    echo json_encode(["success" => true, "message" => "Backup berhasil."]);
+    exit;
+}
 
 ?>
 
@@ -52,6 +56,9 @@ $mahasiswa = query("SELECT * FROM mahasiswa ORDER BY id DESC");
     <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
 
+    <!-- sweetalert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- css Custom -->
     <link rel="stylesheet" href="style.css">
 
@@ -78,7 +85,7 @@ $mahasiswa = query("SELECT * FROM mahasiswa ORDER BY id DESC");
 
             <!-- Toggler/collapsibe Button -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span> 
+                <span class="navbar-toggler-icon"></span>
             </button>
 
             <!-- Navigasi (Kanan) -->
@@ -149,65 +156,16 @@ $mahasiswa = query("SELECT * FROM mahasiswa ORDER BY id DESC");
         </div>
     </section>
 
-    <br>
-
-    <!-- tombol search -->
-    <!-- <div class="container">
-        <div class="row custom-search">
-            <div class="col-md-8">
-                <form action="" method="post" class="d-flex">
-                    <input type="text" class="form form-control me-2" name="keyword" size="50" autofocus placeholder="cari nomor disposisi" autocomplete="off">
-                    <button class="btn btn-success" type="submit" name="cari">Cari</button>
-                </form>
-
-            </div>
-        </div>
-    </div> -->
-
-    <br>
-
-    <!-- navigasi -->
-    <!-- <div class="container">
-        <nav aria-label="Page navigation example">
-            <ul class="pagination">
-            <?php if ($halamanAktif > 1) : ?>
-                <li class="page-item"><a class="page-link" href="?halaman=<?= $halamanAktif - 1; ?>">previos</a></li>
-            <?php endif; ?>
-
-
-            <?php for ($i = 1; $i <= $jumlahHalaman; $i++) : ?>
-                <?php if ($i == $halamanAktif) : ?>
-                    <li class="page-itemm"><a class="page-link" href="?halaman=<?= $i; ?>" style="font-weight: bold; color:red;"><?= $i; ?></a></li>
-                <?php else : ?>
-                    <li class="page-item">
-                        <a class="page-link" href="?halaman=<?= $i; ?>"><?= $i; ?></a>
-                    </li>
-                <?php endif; ?>
-
-            <?php endfor; ?>
-
-            <?php if ($halamanAktif < $jumlahHalaman) : ?>
-                <li class="page-item">
-                    <a class="page-link" href="?halaman=<?= $halamanAktif + 1; ?>">next</a>
-
-                </li>
-
-            <?php endif; ?>
-            </ul>
-        </nav>
-    </div> -->
-
-    <br>
-    <!-- tombol download PDF -->
-    <!-- <div class="container mb-3">
-        <a class="btn btn-sm btn-warning" href="cetakPDF.php" target="_blank"><i class="bi bi-printer-fill mx-1"></i>Download pdf</a>
-    </div> -->
 
     <!-- table -->
     <div class="container-fluid p-4">
-        <div class="d-flex justify-content-center align-items-center py-4">
-            <a href="tambah.php" class="btn btn-primary btn-sm "><i class="fa-solid fa-folder-plus"></i> input data</a>
-            <a href="/view/view.php" class="btn btn-sm btn-warning ms-auto">View pengajuan</a>
+        <div class="d-flex justify-content-center align-items-center py-4 ">
+            <a href="tambah.php" class="btn btn-primary btn-sm"><i class="fa-solid fa-folder-plus"></i> input data</a>
+            <div class="d-flex justify-content-end align-items-end py-4 ms-auto">
+                <a href="./story/history.php" class="btn btn-success btn-sm mx-3"></i>Arsip ND</a>
+                <a href="./view/view.php" class="btn btn-sm btn-warning ">lihat pengajuan</a>
+
+            </div>
         </div>
         <div class="table-responsive">
             <table id="example" class="table table-striped" style="width:100%">
@@ -222,22 +180,37 @@ $mahasiswa = query("SELECT * FROM mahasiswa ORDER BY id DESC");
                     </tr>
                 </thead>
                 <tbody>
-                    <?php $i=1; ?>
-                    <?php foreach($mahasiswa as $data) : ?>
-                    <tr>
-                        <td><?= $i; ?></td>
-                        <td><?= $data['tanggal']; ?></td>
-                        <td><?= $data['kepada']; ?></td>
-                        <td><?= $data['no_ndkeluar']; ?></td>
-                        <td><?= $data['perihal']; ?></td>
-                        <td>
-                            <a class="text-decoration-none text-warning" href="ubah.php?id=<?= $data["id"]; ?>"><i class="fa-solid fa-pen"></i></a>
-                            <a class="text-decoration-none text-danger" href="hapus.php?id=<?= $data["id"];  ?>" onclick="return confirm('Yakin?');"><i class="fa-solid fa-trash"></i></a>
-                        </td>
-                    </tr>
-                    <?php $i++; ?>
+                    <?php $i = 1; ?>
+                    <?php foreach ($mahasiswa as $data) : ?>
+                        <tr>
+                            <td><?= $i; ?></td>
+                            <td><?= $data['tanggal']; ?></td>
+                            <td><?= $data['kepada']; ?></td>
+                            <td><?= $data['no_ndkeluar']; ?></td>
+                            <td><?= $data['perihal']; ?></td>
+                            <td>
+                                <a class="text-decoration-none text-warning" href="ubah.php?id=<?= $data["id"]; ?>"><i class="fa-solid fa-pen"></i></a>
+                                <a class="text-decoration-none text-danger pointer" onclick="confirmDelete(<?= $data['id']; ?>)">
+                                    <i class="fa-solid fa-trash"></i>
+                                </a>
+
+                            </td>
+                        </tr>
+                        <?php $i++; ?>
                     <?php endforeach; ?>
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th class="d-flex">
+                            <button class="btn btn-success btn-sm" id="backupButton">backup</button>
+                        </th>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>
@@ -274,11 +247,75 @@ $mahasiswa = query("SELECT * FROM mahasiswa ORDER BY id DESC");
         });
     </script>
 
+    <script>
+        document.getElementById('backupButton').addEventListener('click', function() {
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: 'Semua data akan dibackup!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, backup sekarang!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Kirim request POST untuk backup
+                    fetch('index.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: 'backup=true'
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire('Berhasil!', data.message, 'success').then(() => {
+                                    location.reload(); // Refresh halaman jika diperlukan
+                                });
+                            } else {
+                                Swal.fire('Gagal!', 'Terjadi kesalahan saat backup.', 'error');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire('Gagal!', 'Tidak dapat memproses backup.', 'error');
+                        });
+                }
+            });
+        });
+    </script>
+
+    <!-- konfirmasi tombol hapus di table -->
+    <script>
+        function confirmDelete(id) {
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Data yang dihapus tidak dapat dikembalikan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Redirect ke halaman hapus
+                    window.location.href = `hapus.php?id=${id}`;
+                }
+            });
+        }
+    </script>
+
+
+
     <style>
         .dt-buttons {
             float: right;
             margin-left: 5px;
         }
+
         .jumbotron {
             border: none;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);

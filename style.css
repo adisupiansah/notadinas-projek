@@ -20,6 +20,9 @@
     justify-content: center;
     margin-top: 50px;
 }
+.pointer{
+    cursor: pointer;
+}
 
 @media screen and (max-width: 473px) {
     .presisi{
